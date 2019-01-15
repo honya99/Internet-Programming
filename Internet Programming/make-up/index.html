@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+  <head>
+    <meta charset="utf-8">
+    <title>My Animated Canvas</title>
+  </head>
+  <body>
+    <main>
+        <h2>Honya Elfayoumy</h2>
+        <canvas id="myCanvas" width="1000" height="800" style="border:1px solid #d3d3d3;"></canvas><br>
+        </p><button type="button" onclick="changeRadius(true)">Increase Radius</button>
+        <button type="button" onclick="changeRadius(false)">Decrease Radius</button>
+        <p><a href="../index.html"><span class="hover">ePortfolio</span></a></p>
+    </main>
+    <script defer>
+      var canvas = document.getElementById("myCanvas");
+      var context = canvas.getContext("2d");
+      //JavaScript Objects
+      var Circle = {
+				"borderColor" : "black",
+				"borderWidth" : 2,
+				"color" : "blue",
+				"radius" : 25,
+				"x" : 25,
+				"y" : 25
+			};
+
+      var Text = {
+        "color" : "red",
+        "text" : "UNF",
+        "x" : 0,
+        "y" : 100
+      }
+      //JavaScript Functions
+      function animate(canvas, context){
+        testBorderTouch(canvas);
+        
+        //Clear the HTML Canvas area
+        context.clearRect(0, 0, canvas.width, canvas.height);
+
+        drawCircle(Circle, context);
+        drawText(Text, context);
+        //Request a new animated frame
+         window.requestAnimationFrame(function(){
+           animate(canvas,context);
+        });
+      }
+
+      function changeRadius(increase){
+        if(increase === true){
+          // /Check if the increased radius value exceeds the max
+          if (Circle.radius >= 50){
+            Circle.radius = 50;
+          }else{
+            Circle.radius += 5;
+          }
+        }else if (increase === false){
+          //Check if the decreased radius value exceeds the min
+          if(Circle.radius <= 5){
+            Circle.radius = 5;
+          }else{
+            Circle.radius -= 5;
+          }
+        }
+      }
+
+
+      var mx = 2;
+      var my = -2;
+      function drawCircle(circle, context){
+        //Update the x and y values of the Circle object
+        circle.x += mx;
+        circle.y -= my;
+        //Draw a Circle
+        context.fillStyle = Circle.color;
+        context.beginPath();
+        context.arc(circle.x, circle.y, circle.radius, 0, 2 * Math.PI);
+        context.closePath();
+        context.fill();
+      }
+
+      var tx = 2;
+      function drawText(text, context){
+        //Update the x value of the Text object
+        Text.x += tx;
+        context.font = '36px sans-serif';
+        context.fillStyle = text.color;
+        context.fillText(text.text, text.x, text.y);
+      }
+
+      function testBorderTouch(canvas){
+        if(Circle.x > canvas.width - Circle.radius) {
+          mx = -2;
+          Circle.color = "red";
+        }else if(Circle.x < 0 + Circle.radius){
+          mx = 2;
+          Circle.color = "blue";
+        }
+
+        if(Circle.y > canvas.height - Circle.radius) {
+          my = 2;
+          Circle.color = "green";
+        }else if(Circle.y < 0 + Circle.radius){
+          my = -2;
+          Circle.color = "orange";
+        }
+
+        //Reposition text
+        var metrics = context.measureText(Text);
+        var width = metrics.width;
+        //move to the right
+        if(Text.x > canvas.width){
+          Text.x = 25 - width;
+        }
+      }
+      animate(canvas, context);
+
+    </script>
+  </body>
+</html>
